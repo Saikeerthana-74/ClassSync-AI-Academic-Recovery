@@ -1,0 +1,82 @@
+let data = [];
+let currentStudent = "";
+
+// ROLE SWITCHING
+function showTeacher() {
+  document.getElementById("roleSelection").style.display = "none";
+  document.getElementById("teacherPanel").style.display = "block";
+}
+
+function showStudent() {
+  currentStudent = prompt("Enter your name (Sai/Ravi/Anu)");
+
+  document.getElementById("roleSelection").style.display = "none";
+  document.getElementById("studentPanel").style.display = "block";
+
+  displayBucket(currentStudent);
+}
+
+function goBack() {
+  document.getElementById("roleSelection").style.display = "block";
+  document.getElementById("teacherPanel").style.display = "none";
+  document.getElementById("studentPanel").style.display = "none";
+}
+
+// ADD MISSED TOPIC
+function markAbsent() {
+  let topic = document.getElementById("topic").value;
+  let student = document.getElementById("student").value;
+
+  if (topic !== "") {
+    data.push({ student, topic });
+    alert(student + " missed: " + topic);
+    document.getElementById("topic").value = "";
+  }
+}
+
+// DISPLAY BUCKET
+function displayBucket(studentName) {
+  let list = document.getElementById("bucket");
+  let status = document.getElementById("status");
+
+  list.innerHTML = "";
+
+  let filtered = data.filter(item => item.student === studentName);
+
+  if (filtered.length === 0) {
+    status.innerText = "No missed topics 🎉";
+  } else {
+    status.innerText = filtered.length + " topics pending";
+
+    filtered.forEach(item => {
+      let li = document.createElement("li");
+      li.textContent = item.topic;
+      list.appendChild(li);
+    });
+  }
+}
+
+// EXAM MODE
+function examMode() {
+  let count = document.getElementById("bucket").children.length;
+  document.getElementById("output").innerText =
+    "You have " + count + " topics to revise";
+}
+
+// MAGIC FEATURE ⭐
+function generatePlan() {
+  let items = document.querySelectorAll("#bucket li");
+
+  if (items.length === 0) {
+    alert("No topics to plan 🎉");
+    return;
+  }
+
+  let plan = "Your Catch-Up Plan:\n";
+
+  items.forEach((item, index) => {
+    plan += "Day " + (index + 1) + ": " + item.innerText + "\n";
+  });
+
+  alert(plan);
+}
